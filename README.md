@@ -17,7 +17,7 @@ This is a documentation / Walkthrough on how to install Elastic Stack on Ubuntu 
 | Elasticsearch | 5.1.2         |
 | Logstash      | 5.1.2-1         |
 | Kibana        | 5.1.2         |
-| Beats         | 5.1.0         |
+| Filebeat         | 5.1.0         |
 | X-Pack        | 5.1.0         |
 | Nginx         | 1.10.0        |
 | Java          | 1.8.0_121     |
@@ -68,7 +68,7 @@ Save and exit the file, and reload it.
 
 You can now test whether the environment variable has been set by executing the following command:
 ```shell
-    echo $JAVA_HOME
+  $ echo $JAVA_HOME
 ```
 This will return the path you just set.
    
@@ -331,4 +331,114 @@ Restart Logstash, and enable it, to put our configuration changes into effect:
 ```
 Logstash will be listening for.
 
-Next, we'll load the sample Kibana dashboards.
+###Install Filebeat
+
+The Filebeat package is available from the same repository as Elasticsearch.
+Update your apt package database:
+```shell
+$ sudo apt-get update
+```
+Install Filebeat with this command:
+```shell
+$ sudo apt install filebeat
+```
+Filebeat is installed but it is not configured yet.
+
+###Configure Filebeat
+To configure Filebeat, you edit the configuration file.
+```shell
+$ sudo nano /etc/filebeat/filebeat.yml
+```
+
+>Filebeat's configuration file is in YAML format, which means that indentation is very important! Be sure to use the same number of spaces that are indicated in these instructions.
+
+Near the top of the file, you will see the `prospectors` section, which is where you can define prospectors that specify which log files should be shipped and how they should be handled. Each prospector is indicated by the `-` character.
+
+We'll modify the existing prospector to send `syslog` and `auth.log` to Logstash. Under `paths`, comment out the `- /var/log/*.log` file. This will prevent Filebeat from sending every `.log` in that directory to Logstash. Then add new entries for `syslog` and `auth.log`. It should look something like this when you're done:
+
+```YAML
+...
+      paths:
+        - /var/log/auth.log
+        - /var/log/syslog
+       # - /var/log/*.log
+...
+```
+
+Then find the line that specifies `document_type:`, uncomment it and change its value to "syslog". It should look like this after the modification:
+
+```YAML
+...
+      document_type: syslog
+...
+```
+
+This specifies that the logs in this prospector are of type **syslog** (which is the type that our Logstash filter is looking for).
+
+If you want to send other files to your ELK server, or make any changes to how Filebeat handles your logs, feel free to modify or add prospector entries.
+
+Next, under the `output` section, find the line that says `elasticsearch:`, which indicates the Elasticsearch output section (which we are not going to use). **Delete or comment out the entire Elasticsearch output section** (up to the line that says #logstash:).
+
+Find the commented out Logstash output section, indicated by the line that says `#logstash:`, and uncomment it by deleting the preceding `#`. In this section, uncomment the `hosts: ["localhost:5044"]` line. Change `localhost` to the private IP address (or hostname, if you went with that option) of your ELK server:
+
+```YAML
+  ### Logstash as output
+  logstash:
+    # The Logstash hosts
+    hosts: ["ELK_server_private_IP:5044"]
+```
+
+This configures Filebeat to connect to Logstash on your ELK Server at port `5044` (the port that we specified a Logstash input for earlier).
+
+Directly under the `hosts` entry, and with the same indentation, add this line:
+```YAML
+  ### Logstash as output
+  logstash:
+    # The Logstash hosts
+    hosts: ["ELK_server_private_IP:5044"]
+    bulk_max_size: 1024
+```
+
+Next, find the `tls` section, and uncomment it. Then uncomment the line that specifies `certificate_authorities`, and change its value to `["/etc/pki/tls/certs/logstash-forwarder.crt"]`. It should look something like this:
+```YAML
+...
+    tls:
+      # List of root certificates for HTTPS server verifications
+      certificate_authorities: ["/etc/pki/tls/certs/logstash-forwarder.crt"]
+```
+
+This configures Filebeat to use the SSL certificate that we created on the ELK Server.
+
+Save and quit.
+
+>To test your configuration file, change to the directory where the Filebeat binary is installed, and run Filebeat in the foreground with the following options specified:
+```shell
+$ /usr/bin/filebeat.sh -configtest -e
+```
+You should get an answer like this:
+```shell
+2017/01/24 20:32:55.463849 beat.go:267: INFO Home path: [/usr/share/filebeat] Config path: [/etc/filebeat] Data path: [/var/lib/filebeat] Logs path: [/var/log/filebeat]
+2017/01/24 20:32:55.464128 beat.go:177: INFO Setup Beat: filebeat; Version: 5.1.2
+2017/01/24 20:32:55.463940 logp.go:219: INFO Metrics logging every 30s
+2017/01/24 20:32:55.464627 logstash.go:90: INFO Max Retries set to: 3
+2017/01/24 20:32:55.464796 outputs.go:106: INFO Activated logstash as output plugin.
+2017/01/24 20:32:55.464972 publish.go:291: INFO Publisher name: elk
+2017/01/24 20:32:55.465249 async.go:63: INFO Flush Interval set to: 1s
+2017/01/24 20:32:55.465365 async.go:64: INFO Max Bulk Size set to: 1024
+Config OK
+```
+
+Now restart Filebeat to put our changes into place:
+```shell
+   $ sudo systemctl restart filebeat
+   $ sudo systemctl enable filebeat
+```
+
+
+###Configure Filebeat to Use Logstash
+
+###Loading the Index Template in Elasticsearch
+
+###Set Up Filebeat (Add Client Servers)
+
+Do these steps for each Ubuntu or Debian server that you want to send logs to Logstash on your ELK Server.
