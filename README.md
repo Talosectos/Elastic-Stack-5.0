@@ -2,11 +2,11 @@
 
 This is a documentation / Walkthrough on how to install Elastic Stack on Ubuntu 16.04 Server
 
-## Elastic-Stack-5.0 Installation Guide
+##Elastic-Stack-5.0 Installation Guide
 
-### Author Stephane
+###Author Stephane
 
-## Follow These Steps To Get A Full ELK Installation
+##Follow These Steps To Get A Full ELK Installation
 
 ##   Java Setup: Install Java 8
    
