@@ -89,5 +89,23 @@ This is a documentation / Walkthrough on how to install Elastic Stack on Ubuntu 
    ```shell
    sudo apt-get update && sudo apt-get install kibana
    ```
+   Kibana is now installed.
+
+   Open the Kibana configuration file for editing:
+   ```shell
+   sudo nano /etc/kibana/config/kibana.yml
+   ```
+   In the Kibana configuration file, find the line that specifies server.host, and replace the IP address ("0.0.0.0" by default) with "localhost":
+   ```YAML
+   server.host: "localhost"
+   ```
+   Save and exit. This setting makes it so Kibana will only be accessible to the localhost. This is fine because we will use an Nginx reverse proxy to allow external access.
+
+   Now enable the Kibana service, and start it:
+   ```shell
+   sudo systemctl daemon-reload
+   sudo systemctl enable kibana
+   sudo systemctl start kibana
+   ```
    
    
