@@ -19,4 +19,13 @@ This is a documentation / Walkthrough on how to install Elastic Stack on Ubuntu 
    
    Update the `apt` package database.
    ```shell
-   $sudo
+   $ sudo apt update
+   ```
+   
+   Install the latest stable version of Oracle Java 8 with this command (and accept the license agreement that pops up):
+   ```shell
+   $ sudo apt install oracle-java8-installer
+   ```
+   
+   Proceed with Elasticsearch installation.
+   ##Install Elasticsearch
