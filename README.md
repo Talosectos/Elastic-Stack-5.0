@@ -4,5 +4,5 @@ This is a documentation / Walkthrough on how to install Elastic Stack on Ubuntu 
 
 ## Elastic-Stack-5.0 Installation Guide
 
-## Author Stephane
+### Author Stephane
 
