@@ -107,5 +107,8 @@ This is a documentation / Walkthrough on how to install Elastic Stack on Ubuntu 
    sudo systemctl enable kibana
    sudo systemctl start kibana
    ```
-   
+   Before we can use the Kibana web interface, we have to set up a reverse proxy. Let's do that now, with Nginx.
+   ##Install Nginx
+   Because we configured Kibana to listen on `localhost`, we must set up a reverse proxy to allow external access to it. We will use Nginx for this purpose.
+   >If you already have an Nginx instance that you want to use, feel free to use that instead. Just make sure to configure Kibana so it is reachable by your Nginx server (you probably want to change the host value, in /opt/kibana/config/kibana.yml, to your Kibana server's private IP address or hostname). Also, it is recommended that you enable SSL/TLS.
    
