@@ -54,7 +54,7 @@ This is a documentation / Walkthrough on how to install Elastic Stack on Ubuntu 
    ```
    You may need to install the apt-transport-https package on Debian before proceeding:
    ```shell
-   sudo apt-get install apt-transport-https
+   $ sudo apt-get install apt-transport-https
    ```
    Save the repository definition to /etc/apt/sources.list.d/elastic-5.x.list:
    ```shell
@@ -62,7 +62,7 @@ This is a documentation / Walkthrough on how to install Elastic Stack on Ubuntu 
    ```
    Run sudo apt-get update and the repository is ready for use. You can install it with:
    ```shell
-   sudo apt-get update && sudo apt-get install elasticsearch
+   $ sudo apt-get update && sudo apt-get install elasticsearch
    ```
    Elasticsearch is now installed. Let's edit the configuration:
    ```shell
@@ -76,24 +76,24 @@ This is a documentation / Walkthrough on how to install Elastic Stack on Ubuntu 
    Save and exit `elasticsearch.yml`.
    Now, start Elasticsearch:
    ```shell
-    sudo systemctl restart elasticsearch
+   $ sudo systemctl restart elasticsearch
    ```
    Then, run the following command to start Elasticsearch on boot up:
    ```shell
-    sudo systemctl daemon-reload
-    sudo systemctl enable elasticsearch
+   $ sudo systemctl daemon-reload
+   $ sudo systemctl enable elasticsearch
    ```
    Now that Elasticsearch is up and running, let's install Kibana.
    ##Install Kibana
    Update your `apt` package database and install Kibana.
    ```shell
-   sudo apt-get update && sudo apt-get install kibana
+   $ sudo apt-get update && sudo apt-get install kibana
    ```
    Kibana is now installed.
 
    Open the Kibana configuration file for editing:
    ```shell
-   sudo nano /etc/kibana/config/kibana.yml
+   $ sudo nano /etc/kibana/config/kibana.yml
    ```
    In the Kibana configuration file, find the line that specifies server.host, and replace the IP address ("0.0.0.0" by default) with "localhost":
    ```YAML
@@ -103,12 +103,59 @@ This is a documentation / Walkthrough on how to install Elastic Stack on Ubuntu 
 
    Now enable the Kibana service, and start it:
    ```shell
-   sudo systemctl daemon-reload
-   sudo systemctl enable kibana
-   sudo systemctl start kibana
+   $ sudo systemctl daemon-reload
+   $ sudo systemctl enable kibana
+   $ sudo systemctl start kibana
    ```
    Before we can use the Kibana web interface, we have to set up a reverse proxy. Let's do that now, with Nginx.
    ##Install Nginx
    Because we configured Kibana to listen on `localhost`, we must set up a reverse proxy to allow external access to it. We will use Nginx for this purpose.
-   >If you already have an Nginx instance that you want to use, feel free to use that instead. Just make sure to configure Kibana so it is reachable by your Nginx server (you probably want to change the host value, in /opt/kibana/config/kibana.yml, to your Kibana server's private IP address or hostname). Also, it is recommended that you enable SSL/TLS.
-   
+   >If you already have an Nginx instance that you want to use, feel free to use that instead. Just make sure to configure Kibana so it is reachable by your Nginx server (you probably want to change the host value, in /etc/kibana/config/kibana.yml, to your Kibana server's private IP address or hostname). Also, it is recommended that you enable SSL/TLS.
+   Use apt to install Nginx:
+   ```shell
+   $ sudo apt-get -y install nginx
+   ```
+   Use openssl to create an admin user, called "kibanaadmin" (you should use another name), that can access the Kibana web interface:
+   ```shell
+   $ sudo -v
+   $ echo "kibanaadmin:`openssl passwd -apr1`" | sudo tee -a /etc/nginx/htpasswd.users
+   ```
+   Enter a password at the prompt. Remember this login, as you will need it to access the Kibana web interface.
+
+   Now open the Nginx default server block in your favorite editor:
+   ```shell
+   $ sudo nano /etc/nginx/sites-available/default
+   ```
+   Delete the file's contents, and paste the following code block into the file. Be sure to update the server_name to match your server's name or public IP address:
+   ```Nginx
+
+    server {
+        listen 80;
+
+        server_name example.com;
+
+        auth_basic "Restricted Access";
+        auth_basic_user_file /etc/nginx/htpasswd.users;
+
+        location / {
+            proxy_pass http://localhost:5601;
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection 'upgrade';
+            proxy_set_header Host $host;
+            proxy_cache_bypass $http_upgrade;        
+        }
+    }
+   ```
+  Save and exit. This configures Nginx to direct your server's HTTP traffic to the Kibana application, which is listening on `localhost:5601`. Also, Nginx will use the `htpasswd.users` file, that we created earlier, and require basic authentication.
+
+  Now, check the config for syntax errors and restart Nginx if none are found:
+   ```shell
+   $ sudo nginx -t
+   $ sudo systemctl restart nginx
+   ```
+   If you followed the initial server setup guide for 16.04, you have a UFW firewall enabled. To allow connections to Nginx, we can adjust the rules by typing:
+   ```shell
+   $ sudo ufw allow 'Nginx Full'
+   ```
+   Kibana is now accessible via your FQDN or the public IP address of your ELK Server i.e. `http://elk\_server\_public\_ip/`. If you go there in a web browser, after entering the "kibanaadmin" credentials, you should see a Kibana welcome page which will ask you to configure an index pattern. Let's get back to that later, after we install all of the other components.
