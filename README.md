@@ -46,7 +46,9 @@ This is a documentation / Walkthrough on how to install Elastic Stack on Ubuntu 
    ```
    
    Proceed with Elasticsearch installation.
-   ##Install Elasticsearch
+   
+###Install Elasticsearch
+
    First of all we need to configure Elastic Apt repository.
    
    Download and install the Public Signing Key
@@ -85,7 +87,9 @@ This is a documentation / Walkthrough on how to install Elastic Stack on Ubuntu 
    $ sudo systemctl enable elasticsearch
    ```
    Now that Elasticsearch is up and running, let's install Kibana.
-   ##Install Kibana
+
+###Install Kibana
+
    Update your `apt` package database and install Kibana.
    ```shell
    $ sudo apt-get update && sudo apt-get install kibana
@@ -109,7 +113,9 @@ This is a documentation / Walkthrough on how to install Elastic Stack on Ubuntu 
    $ sudo systemctl start kibana
    ```
    Before we can use the Kibana web interface, we have to set up a reverse proxy. Let's do that now, with Nginx.
-   ##Install Nginx
+
+###Install Nginx
+
    Because we configured Kibana to listen on `localhost`, we must set up a reverse proxy to allow external access to it. We will use Nginx for this purpose.
    >If you already have an Nginx instance that you want to use, feel free to use that instead. Just make sure to configure Kibana so it is reachable by your Nginx server (you probably want to change the host value, in /etc/kibana/config/kibana.yml, to your Kibana server's private IP address or hostname). Also, it is recommended that you enable SSL/TLS.
    
@@ -161,7 +167,8 @@ This is a documentation / Walkthrough on how to install Elastic Stack on Ubuntu 
    $ sudo ufw allow 'Nginx Full'
    ```
    Kibana is now accessible via your FQDN or the public IP address of your ELK Server i.e. `http://elk\_server\_public\_ip/`. If you go there in a web browser, after entering the "kibanaadmin" credentials, you should see a Kibana welcome page which will ask you to configure an index pattern. Let's get back to that later, after we install all of the other components.
-   ##Install Logstash
+ 
+###Install Logstash
 
    The Logstash package is available from the same repository as Elasticsearch.
    Update your apt package database:
