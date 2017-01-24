@@ -6,6 +6,23 @@ This is a documentation / Walkthrough on how to install Elastic Stack on Ubuntu 
 
 ###Author Stephane
 
+####Minimum System Requirements
+    OS: Ubuntu 16.04
+    RAM: 5GB
+    CPU: 2
+
+
+| Software      | Version       |
+| ------------- | ------------- |
+| Elasticsearch | 5.1.2         |
+| Logstash      | 5.1.2-1         |
+| Kibana        | 5.1.0         |
+| Beats         | 5.1.0         |
+| X-Pack        | 5.1.0         |
+| Nginx         | 1.10.0        |
+| Java          | 1.8.0_111     |
+ 
+
 ##Follow These Steps To Get A Full ELK Installation
 * Let's Go
 ##    Java Setup: Install Java 8
@@ -29,3 +46,15 @@ This is a documentation / Walkthrough on how to install Elastic Stack on Ubuntu 
    
    Proceed with Elasticsearch installation.
    ##Install Elasticsearch
+   First of all we need to configure Elastic Apt repository.
+   
+   Download and install the Public Signing Key
+   ```shell
+   $ wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
+   ```
+   You may need to install the apt-transport-https package on Debian before proceeding:
+   ```shell
+   sudo apt-get install apt-transport-https
+   ```
+   
+   
