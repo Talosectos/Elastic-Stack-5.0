@@ -44,8 +44,35 @@ This is a documentation / Walkthrough on how to install Elastic Stack on Ubuntu 
    ```shell
    $ sudo apt install oracle-java8-installer
    ```
+
+###Setting the JAVA_HOME Environment Variable
+
+Many programs, such as Java servers, use the `JAVA_HOME` environment variable to determine the Java installation location. To set this environment variable, we will first need to find out where Java is installed. You can do this by executing the same command as in the previous section:
+```shell
+   $ sudo update-alternatives --config java
+```
+Copy the path from your preferred installation and then open `/etc/environment` using nano or your favorite text editor.
+```shell
+   $ sudo nano /etc/environment
+```
+At the end of this file, add the following line, making sure to replace the highlighted path with your own copied path.
+```
+JAVA_HOME="/usr/lib/jvm/java-8-oracle/jre/bin/java"
+export JAVA_HOME
+```
+
+Save and exit the file, and reload it.
+```shell
+   $ source /etc/environment
+```
+
+You can now test whether the environment variable has been set by executing the following command:
+```shell
+    echo $JAVA_HOME
+```
+This will return the path you just set.
    
-   Proceed with Elasticsearch installation.
+Proceed with Elasticsearch installation.
    
 ###Install Elasticsearch
 
