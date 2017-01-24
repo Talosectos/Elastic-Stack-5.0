@@ -220,3 +220,52 @@ Now generate the SSL certificate and private key, in the appropriate locations (
    $ sudo openssl req -subj '/CN=ELK_server_fqdn/' -x509 -days 3650 -batch -nodes -newkey rsa:2048 -keyout private/logstash-forwarder.key -out certs/logstash-forwarder.crt
 ```
 The *logstash-forwarder.crt* file will be copied to all of the servers that will send logs to Logstash but we will do that a little later. Let's complete our Logstash configuration.
+
+###Configure Logstash
+
+Logstash configuration files are in the JSON-format, and reside in `/etc/logstash/conf.d`. The configuration consists of three sections: inputs, filters, and outputs.
+
+Let's create a configuration file called `02-beats-input.conf` and set up our "filebeat" input:
+```shell
+   $ sudo nano /etc/logstash/conf.d/02-beats-input.conf
+```
+Insert the following **input** configuration:
+```JSON
+    input {
+      beats {
+        port => 5044
+        ssl => true
+        ssl_certificate => "/etc/pki/tls/certs/logstash-forwarder.crt"
+        ssl_key => "/etc/pki/tls/private/logstash-forwarder.key"
+      }
+    }
+```
+Save and quit. This specifies a `beats` input that will listen on TCP port `5044`, and it will use the SSL certificate and private key that we created earlier.
+
+If you followed the Ubuntu 16.04 initial server setup guide, you will have a UFW firewall configured. To allow Logstash to receive connections on port `5044`, we need to open that port:
+    ```shell
+$	sudo ufw allow 5044
+```
+Now let's create a configuration file called 10-syslog-filter.conf, where we will add a filter for syslog messages:
+```shell
+    sudo nano /etc/logstash/conf.d/10-syslog-filter.conf
+```
+Insert the following syslog filter configuration:
+
+```JSON
+    filter {
+      if [type] == "syslog" {
+        grok {
+          match => { "message" => "%{SYSLOGTIMESTAMP:syslog_timestamp} %{SYSLOGHOST:syslog_hostname} %{DATA:syslog_program}(?:\[%{POSINT:syslog_pid}\])?: %{GREEDYDATA:syslog_message}" }
+          add_field => [ "received_at", "%{@timestamp}" ]
+          add_field => [ "received_from", "%{host}" ]
+        }
+        syslog_pri { }
+        date {
+          match => [ "syslog_timestamp", "MMM  d HH:mm:ss", "MMM dd HH:mm:ss" ]
+        }
+      }
+    }
+```
+
+Save and quit. This filter looks for logs that are labeled as "syslog" type (by Filebeat), and it will try to use `grok` to parse incoming syslog logs to make it structured and query-able.
