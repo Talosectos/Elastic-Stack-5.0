@@ -60,4 +60,13 @@ This is a documentation / Walkthrough on how to install Elastic Stack on Ubuntu 
    ```shell
    $ echo "deb https://artifacts.elastic.co/packages/5.x/apt stable main" | sudo tee -a /etc/apt/sources.list.d/elastic-5.x.list
    ```
+   Run sudo apt-get update and the repository is ready for use. You can install it with:
+   ```shell
+   sudo apt-get update && sudo apt-get install elasticsearch
+   ```
+   Elasticsearch is now installed. Let's edit the configuration:
+   ```shell
+   $ sudo nano /etc/elasticsearch/elasticsearch.yml
+   ```
+   
    
