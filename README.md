@@ -69,5 +69,9 @@ This is a documentation / Walkthrough on how to install Elastic Stack on Ubuntu 
    $ sudo nano /etc/elasticsearch/elasticsearch.yml
    ```
    
+   You will want to restrict outside access to your Elasticsearch instance (port 9200), so outsiders can't read your data or shutdown your Elasticsearch cluster through the HTTP API. Find the line that specifies `network.host`, uncomment it, and replace its value with "localhost" so it looks like this:
+   ```YAML
+   network.host: localhost
+   ```
    
    
