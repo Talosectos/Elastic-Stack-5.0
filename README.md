@@ -206,7 +206,8 @@ Now generate the SSL certificate and private key in the appropriate locations (/
 ```shell
    $ cd /etc/pki/tls
    $ sudo openssl req -config /etc/ssl/openssl.cnf -x509 -days 3650 -batch -nodes -newkey rsa:2048 -keyout private/logstash-forwarder.key -out certs/logstash-forwarder.crt
-`` 
+```
+
 The *logstash-forwarder.crt* file will be copied to all of the servers that will send logs to Logstash but we will do that a little later. Let's complete our Logstash configuration. If you went with this option, skip option 2 and move on to **Configure Logstash**.
 
 ####Option 2: FQDN (DNS)
