@@ -16,7 +16,7 @@ This is a documentation / Walkthrough on how to install Elastic Stack on Ubuntu 
 | ------------- | ------------- |
 | Elasticsearch | 5.1.2         |
 | Logstash      | 5.1.2-1         |
-| Kibana        | 5.1.0         |
+| Kibana        | 5.1.2         |
 | Beats         | 5.1.0         |
 | X-Pack        | 5.1.0         |
 | Nginx         | 1.10.0        |
@@ -72,6 +72,22 @@ This is a documentation / Walkthrough on how to install Elastic Stack on Ubuntu 
    You will want to restrict outside access to your Elasticsearch instance (port 9200), so outsiders can't read your data or shutdown your Elasticsearch cluster through the HTTP API. Find the line that specifies `network.host`, uncomment it, and replace its value with "localhost" so it looks like this:
    ```YAML
    network.host: localhost
+   ```
+   Save and exit `elasticsearch.yml`.
+   Now, start Elasticsearch:
+   ```shell
+    sudo systemctl restart elasticsearch
+   ```
+   Then, run the following command to start Elasticsearch on boot up:
+   ```shell
+    sudo systemctl daemon-reload
+    sudo systemctl enable elasticsearch
+   ```
+   Now that Elasticsearch is up and running, let's install Kibana.
+   ##Install Kibana
+   Update your `apt` package database and install Kibana.
+   ```shell
+   sudo apt-get update && sudo apt-get install kibana
    ```
    
    
