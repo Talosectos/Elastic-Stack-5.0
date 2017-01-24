@@ -160,3 +160,15 @@ This is a documentation / Walkthrough on how to install Elastic Stack on Ubuntu 
    $ sudo ufw allow 'Nginx Full'
    ```
    Kibana is now accessible via your FQDN or the public IP address of your ELK Server i.e. `http://elk\_server\_public\_ip/`. If you go there in a web browser, after entering the "kibanaadmin" credentials, you should see a Kibana welcome page which will ask you to configure an index pattern. Let's get back to that later, after we install all of the other components.
+   ##Install Logstash
+
+   The Logstash package is available from the same repository as Elasticsearch.
+   Update your apt package database:
+   ```shell
+   $ sudo apt-get update
+   ```
+   Install Logstash with this command:
+   ```shell
+   $ sudo apt-get install logstash
+   ```
+   Logstash is installed but it is not configured yet.
