@@ -8,7 +8,7 @@ This is a documentation / Walkthrough on how to install Elastic Stack on Ubuntu 
 
 ## Follow These Steps To Get A Full ELK Installation
 
-   ## Java Setup: Install Java 8
+##   Java Setup: Install Java 8
    
    Elasticsearch and Logstash require Java. We will install a recent version of Oracle Java 8 because that is what Elasticsearch recommends.
    
