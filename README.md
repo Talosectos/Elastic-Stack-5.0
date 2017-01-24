@@ -243,7 +243,7 @@ Insert the following **input** configuration:
 Save and quit. This specifies a `beats` input that will listen on TCP port `5044`, and it will use the SSL certificate and private key that we created earlier.
 
 If you followed the Ubuntu 16.04 initial server setup guide, you will have a UFW firewall configured. To allow Logstash to receive connections on port `5044`, we need to open that port:
-    ```shell
+```shell
 $	sudo ufw allow 5044
 ```
 Now let's create a configuration file called 10-syslog-filter.conf, where we will add a filter for syslog messages:
