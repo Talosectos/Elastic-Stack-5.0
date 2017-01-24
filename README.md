@@ -269,3 +269,39 @@ Insert the following syslog filter configuration:
 ```
 
 Save and quit. This filter looks for logs that are labeled as "syslog" type (by Filebeat), and it will try to use `grok` to parse incoming syslog logs to make it structured and query-able.
+
+Lastly, we will create a configuration file called `30-elasticsearch-output.conf`:
+```shell
+   $ sudo nano /etc/logstash/conf.d/30-elasticsearch-output.conf
+```
+Insert the following **output** configuration:
+
+```JSON
+    output {
+      elasticsearch {
+        hosts => ["localhost:9200"]
+        sniffing => true
+        manage_template => false
+        index => "%{[@metadata][beat]}-%{+YYYY.MM.dd}"
+        document_type => "%{[@metadata][type]}"
+      }
+    }
+```
+Save and exit. This output basically configures Logstash to store the beats data in Elasticsearch which is running at `localhost:9200`, in an index named after the beat used (filebeat, in our case).
+
+If you want to add filters for other applications that use the Filebeat input, be sure to name the files so they sort between the input and the output configuration (i.e. between 02- and 30-).
+
+Test your Logstash configuration with this command:
+```shell
+   $ sudo /opt/logstash/bin/logstash --configtest -f /etc/logstash/conf.d/
+```
+After a few seconds, it should display `Configuration OK` if there are no syntax errors. Otherwise, try and read the error output to see what's wrong with your Logstash configuration.
+
+Restart Logstash, and enable it, to put our configuration changes into effect:
+```shell
+   $ sudo systemctl restart logstash
+   $ sudo systemctl enable logstash
+```
+Logstash will be listening for.
+
+Next, we'll load the sample Kibana dashboards.
