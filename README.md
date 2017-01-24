@@ -56,5 +56,8 @@ This is a documentation / Walkthrough on how to install Elastic Stack on Ubuntu 
    ```shell
    sudo apt-get install apt-transport-https
    ```
-   
+   Save the repository definition to /etc/apt/sources.list.d/elastic-5.x.list:
+   ```shell
+   $ echo "deb https://artifacts.elastic.co/packages/5.x/apt stable main" | sudo tee -a /etc/apt/sources.list.d/elastic-5.x.list
+   ```
    
