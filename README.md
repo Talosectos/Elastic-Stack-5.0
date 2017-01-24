@@ -180,3 +180,42 @@ This is a documentation / Walkthrough on how to install Elastic Stack on Ubuntu 
    $ sudo apt-get install logstash
    ```
    Logstash is installed but it is not configured yet.
+   
+###Generate SSL Certificates
+
+Since we are going to use Filebeat to ship logs from our Client Servers to our ELK Server, we need to create an SSL certificate and key pair. The certificate is used by Filebeat to verify the identity of ELK Server. Create the directories that will store the certificate and private key with the following commands:
+```shell
+$ sudo mkdir -p /etc/pki/tls/certs
+$ sudo mkdir /etc/pki/tls/private
+```
+Now you have two options for generating your SSL certificates. If you have a DNS setup that will allow your client servers to resolve the IP address of the ELK Server, use **Option 2**. Otherwise, **Option 1** will allow you to use IP addresses.
+
+####Option 1: IP Address
+
+If you don't have a DNS setup—that would allow your servers, that you will gather logs from, to resolve the IP address of your ELK Server—you will have to add your ELK Server's private IP address to the `subjectAltName` (SAN) field of the SSL certificate that we are about to generate. To do so, open the OpenSSL configuration file:
+```shell
+$ sudo nano /etc/ssl/openssl.cnf
+```
+Find the `[ v3_ca ]` section in the file, and add this line under it (substituting in the ELK Server's **private IP address)**:
+```
+subjectAltName = IP: ELK_server_private_IP
+```
+Save and exit.
+
+Now generate the SSL certificate and private key in the appropriate locations (/etc/pki/tls/...), with the following commands:
+```shell
+   $ cd /etc/pki/tls
+   $ sudo openssl req -config /etc/ssl/openssl.cnf -x509 -days 3650 -batch -nodes -newkey rsa:2048 -keyout private/logstash-forwarder.key -out certs/logstash-forwarder.crt
+`` 
+The *logstash-forwarder.crt* file will be copied to all of the servers that will send logs to Logstash but we will do that a little later. Let's complete our Logstash configuration. If you went with this option, skip option 2 and move on to **Configure Logstash**.
+
+####Option 2: FQDN (DNS)
+
+If you have a DNS setup with your private networking, you should create an A record that contains the ELK Server's private IP address—this domain name will be used in the next command, to generate the SSL certificate. Alternatively, you can use a record that points to the server's public IP address. Just be sure that your servers (the ones that you will be gathering logs from) will be able to resolve the domain name to your ELK Server.
+
+Now generate the SSL certificate and private key, in the appropriate locations (`/etc/pki/tls/...`), with the following (substitute in the FQDN of the ELK Server):
+```shell
+   $ cd /etc/pki/tls
+   $ sudo openssl req -subj '/CN=ELK_server_fqdn/' -x509 -days 3650 -batch -nodes -newkey rsa:2048 -keyout private/logstash-forwarder.key -out certs/logstash-forwarder.crt
+```
+The *logstash-forwarder.crt* file will be copied to all of the servers that will send logs to Logstash but we will do that a little later. Let's complete our Logstash configuration.
