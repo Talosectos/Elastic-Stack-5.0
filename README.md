@@ -489,7 +489,8 @@ Try the following things:
 * Click on messages below the histogram to see how the data is being filtered
 
 Kibana has many other features, such as graphing and filtering, so feel free to poke around!
-Conclusion
+
+###Conclusion
 
 Now that your syslogs are centralized via Elasticsearch and Logstash, and you are able to visualize them with Kibana, you should be off to a good start with centralizing all of your important logs. Remember that you can send pretty much any type of log or indexed data to Logstash, but the data becomes even more useful if it is parsed and structured with grok.
 
