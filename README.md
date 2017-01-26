@@ -307,7 +307,6 @@ Insert the following **output** configuration:
     output {
       elasticsearch {
         hosts => ["localhost:9200"]
-        sniffing => true
         manage_template => false
         index => "%{[@metadata][beat]}-%{+YYYY.MM.dd}"
         document_type => "%{[@metadata][type]}"
@@ -343,6 +342,27 @@ Install Filebeat with this command:
 $ sudo apt install filebeat
 ```
 Filebeat is installed but it is not configured yet.
+
+###Set Up Filebeat (Add Client Servers)
+
+Do these steps for each Ubuntu or Debian server that you want to send logs to Logstash on your ELK Server.
+
+####Copy SSL Certificate
+
+On your **ELK Server**, copy the SSL certificate you created to your **Client Server** (substitute the client server's address, and your own login):
+```shell
+   elk$ scp /etc/pki/tls/certs/logstash-forwarder.crt user@client_server_private_address:/tmp
+```
+
+After providing your login credentials, ensure that the certificate copy was successful. It is required for communication between the client servers and the ELK Server.
+
+Now, on your **Client Server**, copy the ELK Server's SSL certificate into the appropriate location (`/etc/pki/tls/certs`):
+```shell
+client$ sudo mkdir -p /etc/pki/tls/certs
+client$ sudo cp /tmp/logstash-forwarder.crt /etc/pki/tls/certs/
+```
+
+Now we will install the Filebeat package.
 
 ###Configure Filebeat
 To configure Filebeat, you edit the configuration file.
@@ -434,11 +454,15 @@ Now restart Filebeat to put our changes into place:
    $ sudo systemctl enable filebeat
 ```
 
-
-###Configure Filebeat to Use Logstash
-
 ###Loading the Index Template in Elasticsearch
 
-###Set Up Filebeat (Add Client Servers)
+If you disable automatic template loading (which is our case), you need to run the following command to load the template:
+```shell
+$ curl -XPUT 'http://localhost:9200/_template/filebeat' -d@/etc/filebeat/filebeat.template.json
+```
 
-Do these steps for each Ubuntu or Debian server that you want to send logs to Logstash on your ELK Server.
+>Note
+If you’ve already used Filebeat to index data into Elasticsearch, the index may contain old documents. After you load the index template, you can delete the old documents from `filebeat-*` to force Kibana to look at the newest documents. Use this command:
+```shell
+$ curl -XDELETE 'http://localhost:9200/filebeat-*'
+```
