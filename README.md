@@ -483,10 +483,10 @@ Right now, there won't be much in there because you are only gathering syslogs f
 
 Try the following things:
 
-*Search for "root" to see if anyone is trying to log into your servers as root
-*Search for a particular hostname (search for host: "hostname")
-*Change the time frame by selecting an area on the histogram or from the menu above
-*Click on messages below the histogram to see how the data is being filtered
+* Search for "root" to see if anyone is trying to log into your servers as root
+* Search for a particular hostname (search for host: "hostname")
+* Change the time frame by selecting an area on the histogram or from the menu above
+* Click on messages below the histogram to see how the data is being filtered
 
 Kibana has many other features, such as graphing and filtering, so feel free to poke around!
 Conclusion
