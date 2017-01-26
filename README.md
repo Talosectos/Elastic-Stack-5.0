@@ -494,4 +494,4 @@ Kibana has many other features, such as graphing and filtering, so feel free to 
 
 Now that your syslogs are centralized via Elasticsearch and Logstash, and you are able to visualize them with Kibana, you should be off to a good start with centralizing all of your important logs. Remember that you can send pretty much any type of log or indexed data to Logstash, but the data becomes even more useful if it is parsed and structured with grok.
 
-To improve your new ELK stack, you should look into gathering and filtering your other logs with Logstash, and creating Kibana dashboards. You may also want to gather system metrics by using Topbeat with your ELK stack. All of these topics are covered in the other tutorials in this series.
+To improve your new ELK stack, you should look into gathering and filtering your other logs with Logstash, and creating Kibana dashboards. You may also want to gather system metrics by using Topbeat with your ELK stack.
