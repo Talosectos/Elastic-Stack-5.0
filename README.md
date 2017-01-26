@@ -478,3 +478,19 @@ In a web browser, go to the FQDN or public IP address of your ELK Server. After 
 Now click the Discover link in the top navigation bar. By default, this will show you all of the log data over the last 15 minutes. You should see a histogram with log events, with log messages below:
 
 ![alt tag](img/kibana_discover.png)
+
+Right now, there won't be much in there because you are only gathering syslogs from your client servers. Here, you can search and browse through your logs. You can also customize your dashboard.
+
+Try the following things:
+
+*Search for "root" to see if anyone is trying to log into your servers as root
+*Search for a particular hostname (search for host: "hostname")
+*Change the time frame by selecting an area on the histogram or from the menu above
+*Click on messages below the histogram to see how the data is being filtered
+
+Kibana has many other features, such as graphing and filtering, so feel free to poke around!
+Conclusion
+
+Now that your syslogs are centralized via Elasticsearch and Logstash, and you are able to visualize them with Kibana, you should be off to a good start with centralizing all of your important logs. Remember that you can send pretty much any type of log or indexed data to Logstash, but the data becomes even more useful if it is parsed and structured with grok.
+
+To improve your new ELK stack, you should look into gathering and filtering your other logs with Logstash, and creating Kibana dashboards. You may also want to gather system metrics by using Topbeat with your ELK stack. All of these topics are covered in the other tutorials in this series.
