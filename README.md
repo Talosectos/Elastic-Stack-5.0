@@ -466,3 +466,11 @@ If you’ve already used Filebeat to index data into Elasticsearch, the index ma
 ```shell
 $ curl -XDELETE 'http://localhost:9200/filebeat-*'
 ```
+
+###Connect to Kibana
+
+When you are finished setting up Filebeat on all of the servers that you want to gather logs for, let's look at Kibana, the web interface that we installed earlier.
+
+In a web browser, go to the FQDN or public IP address of your ELK Server. After entering the "kibanaadmin" credentials, you should see a page prompting you to configure a default index pattern:
+
+![alt tag](img/kibana_default_index_pattern.png)
