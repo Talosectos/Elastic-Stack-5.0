@@ -474,3 +474,7 @@ When you are finished setting up Filebeat on all of the servers that you want to
 In a web browser, go to the FQDN or public IP address of your ELK Server. After entering the "kibanaadmin" credentials, you should see a page prompting you to configure a default index pattern:
 
 ![alt tag](img/kibana_default_index_pattern.png)
+
+Now click the Discover link in the top navigation bar. By default, this will show you all of the log data over the last 15 minutes. You should see a histogram with log events, with log messages below:
+
+![alt tag](img/kibana_discover.png)
