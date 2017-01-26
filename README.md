@@ -473,4 +473,4 @@ When you are finished setting up Filebeat on all of the servers that you want to
 
 In a web browser, go to the FQDN or public IP address of your ELK Server. After entering the "kibanaadmin" credentials, you should see a page prompting you to configure a default index pattern:
 
-![alt tag](img/kibana_default_index_pattern.png)
+![alt tag](img/kibana_default_index_pattern.PNG)
