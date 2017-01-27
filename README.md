@@ -319,7 +319,7 @@ If you want to add filters for other applications that use the Filebeat input, b
 
 Test your Logstash configuration with this command:
 ```shell
-   $ sudo /opt/logstash/bin/logstash --configtest -f /etc/logstash/conf.d/
+   $ sudo /usr/share/logstash/bin/logstash -t  -f /etc/logstash/conf.d/
 ```
 After a few seconds, it should display `Configuration OK` if there are no syntax errors. Otherwise, try and read the error output to see what's wrong with your Logstash configuration.
 
