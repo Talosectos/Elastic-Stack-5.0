@@ -1,6 +1,6 @@
 PUT /_template/squid
 {
-  "version" : 5,
+  "version" : 6,
   "order": 0,
   "template": "squid-*",
   "settings": {
@@ -35,11 +35,19 @@ PUT /_template/squid
                     "type": "string",
                     "index": "not_analyzed"
                 },
-                "HOSTNAME": {
+                "hostname": {
                     "type": "string",
                     "index": "not_analyzed"
                 },
-                "uri": {
+                "uriproto": {
+                    "type": "string",
+                    "index": "not_analyzed"
+                },
+				"urihost": {
+                    "type": "string",
+                    "index": "not_analyzed"
+                },
+				"uripathparam": {
                     "type": "string",
                     "index": "not_analyzed"
                 },
