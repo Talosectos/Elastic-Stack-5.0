@@ -1,6 +1,6 @@
 PUT /_template/squid
 {
-  "version" : 4,
+  "version" : 5,
   "order": 0,
   "template": "squid-*",
   "settings": {
