@@ -1,6 +1,6 @@
 PUT /_template/squid
 {
-  "version" : 3,
+  "version" : 4,
   "order": 0,
   "template": "squid-*",
   "settings": {
@@ -12,7 +12,8 @@ PUT /_template/squid
         "squid": {
             "properties": {
                 "squid_timestamp": {
-                    "type": "date"
+                    "type": "date",
+					"format" : "epoch_millis"
                 },
 				"duration": {
 				    "type": "integer",
@@ -46,6 +47,10 @@ PUT /_template/squid
                     "type": "string",
                     "index": "not_analyzed"
                 },
+				"connect_port": {
+				    "type": "integer",
+					"index" : "not_analyzed"
+				},
 				"username": {
                     "type": "string",
                     "index": "not_analyzed"
