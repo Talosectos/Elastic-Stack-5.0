@@ -1,6 +1,6 @@
 PUT /_template/squid
 {
-  "version" : 7,
+  "version" : 8,
   "order": 0,
   "template": "squid-*",
   "settings": {
@@ -16,7 +16,7 @@ PUT /_template/squid
 					"index": "not_analyzed"
 					},
 			    "client_ip": {
-                    "type": "keyword",
+                    "type": "ip",
                     "index": "not_analyzed"
                 },
                 "squid_request_status": {
@@ -35,16 +35,12 @@ PUT /_template/squid
                     "type": "keyword",
                     "index": "not_analyzed"
                 },
-                "hostname": {
-                    "type": "keyword",
-                    "index": "not_analyzed"
-                },
                 "uriproto": {
                     "type": "keyword",
                     "index": "not_analyzed"
                 },
 				"urihost": {
-                    "type": "keyword",
+                    "type": "text",
                     "index": "not_analyzed"
                 },
 				"uripathparam": {
