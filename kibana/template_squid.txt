@@ -1,6 +1,6 @@
 PUT /_template/squid
 {
-  "version" : 6,
+  "version" : 7,
   "order": 0,
   "template": "squid-*",
   "settings": {
@@ -16,11 +16,11 @@ PUT /_template/squid
 					"index": "not_analyzed"
 					},
 			    "client_ip": {
-                    "type": "string",
+                    "type": "keyword",
                     "index": "not_analyzed"
                 },
                 "squid_request_status": {
-                    "type": "string",
+                    "type": "keyword",
                     "index": "not_analyzed"
                 },
                 "http_status_code": {
@@ -32,23 +32,23 @@ PUT /_template/squid
                     "index": "not_analyzed"
                 },
                 "http_method": {
-                    "type": "string",
+                    "type": "keyword",
                     "index": "not_analyzed"
                 },
                 "hostname": {
-                    "type": "string",
+                    "type": "keyword",
                     "index": "not_analyzed"
                 },
                 "uriproto": {
-                    "type": "string",
+                    "type": "keyword",
                     "index": "not_analyzed"
                 },
 				"urihost": {
-                    "type": "string",
+                    "type": "keyword",
                     "index": "not_analyzed"
                 },
 				"uripathparam": {
-                    "type": "string",
+                    "type": "keyword",
                     "index": "not_analyzed"
                 },
 				"connect_port": {
@@ -56,19 +56,19 @@ PUT /_template/squid
 					"index" : "not_analyzed"
 				},
 				"username": {
-                    "type": "string",
+                    "type": "keyword",
                     "index": "not_analyzed"
                 },
                 "content_type": {
-                    "type": "string",
+                    "type": "keyword",
                     "index": "not_analyzed"
                 },
                 "squid": {
-                    "type": "string",
+                    "type": "keyword",
                     "index": "not_analyzed"
                 },
                 "peer_host": {
-                    "type": "string",
+                    "type": "keyword",
                     "index": "not_analyzed"
                 }
             }
