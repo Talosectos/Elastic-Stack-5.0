@@ -2,11 +2,11 @@
 
 This is a documentation / Walkthrough on how to install Elastic Stack on Ubuntu 16.04 Server
 
-##Elastic-Stack-5.0 Installation Guide
+## Elastic-Stack-5.0 Installation Guide
 
-###Author Stephane
+### Author Stephane
 
-####Minimum System Requirements
+#### Minimum System Requirements
     OS: Ubuntu 16.04
     RAM: 5GB
     CPU: 2
@@ -21,31 +21,31 @@ This is a documentation / Walkthrough on how to install Elastic Stack on Ubuntu 
 | X-Pack        | 5.1.0         |
 | Nginx         | 1.10.0        |
 | Java          | 1.8.0_121     |
- 
 
-##Follow These Steps To Get A Full ELK Installation
+
+## Follow These Steps To Get A Full ELK Installation
 
 
 ###    Java Setup: Install Java 8
-   
+
    Elasticsearch and Logstash require Java. We will install a recent version of Oracle Java 8 because that is what Elasticsearch recommends.
-   
+
    Add the Oracle Java PPA to `apt`:
    ```shell
    $ sudo add-apt-repository -y ppa:webupd8team/java`
    ```
-   
+
    Update the `apt` package database.
    ```shell
    $ sudo apt update
    ```
-   
+
    Install the latest stable version of Oracle Java 8 with this command (and accept the license agreement that pops up):
    ```shell
    $ sudo apt install oracle-java8-installer
    ```
 
-###Setting the JAVA_HOME Environment Variable
+### Setting the JAVA_HOME Environment Variable
 
 Many programs, such as Java servers, use the `JAVA_HOME` environment variable to determine the Java installation location. To set this environment variable, we will first need to find out where Java is installed. You can do this by executing the same command as in the previous section:
 ```shell
@@ -71,13 +71,13 @@ You can now test whether the environment variable has been set by executing the 
   $ echo $JAVA_HOME
 ```
 This will return the path you just set.
-   
+
 Proceed with Elasticsearch installation.
-   
-###Install Elasticsearch
+
+### Install Elasticsearch
 
    First of all we need to configure Elastic Apt repository.
-   
+
    Download and install the Public Signing Key
    ```shell
    $ wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
@@ -98,7 +98,7 @@ Proceed with Elasticsearch installation.
    ```shell
    $ sudo nano /etc/elasticsearch/elasticsearch.yml
    ```
-   
+
    You will want to restrict outside access to your Elasticsearch instance (port 9200), so outsiders can't read your data or shutdown your Elasticsearch cluster through the HTTP API. Find the line that specifies `network.host`, uncomment it, and replace its value with "localhost" so it looks like this:
    ```YAML
    network.host: localhost
@@ -115,7 +115,7 @@ Proceed with Elasticsearch installation.
    ```
    Now that Elasticsearch is up and running, let's install Kibana.
 
-###Install Kibana
+### Install Kibana
 
    Update your `apt` package database and install Kibana.
    ```shell
@@ -141,11 +141,11 @@ Proceed with Elasticsearch installation.
    ```
    Before we can use the Kibana web interface, we have to set up a reverse proxy. Let's do that now, with Nginx.
 
-###Install Nginx
+### Install Nginx
 
    Because we configured Kibana to listen on `localhost`, we must set up a reverse proxy to allow external access to it. We will use Nginx for this purpose.
    >If you already have an Nginx instance that you want to use, feel free to use that instead. Just make sure to configure Kibana so it is reachable by your Nginx server (you probably want to change the host value, in /etc/kibana/config/kibana.yml, to your Kibana server's private IP address or hostname). Also, it is recommended that you enable SSL/TLS.
-   
+
    Use apt to install Nginx:
    ```shell
    $ sudo apt-get -y install nginx
@@ -194,8 +194,8 @@ Proceed with Elasticsearch installation.
    $ sudo ufw allow 'Nginx Full'
    ```
    Kibana is now accessible via your FQDN or the public IP address of your ELK Server i.e. `http://elk\_server\_public\_ip/`. If you go there in a web browser, after entering the "kibanaadmin" credentials, you should see a Kibana welcome page which will ask you to configure an index pattern. Let's get back to that later, after we install all of the other components.
- 
-###Install Logstash
+
+### Install Logstash
 
    The Logstash package is available from the same repository as Elasticsearch.
    Update your apt package database:
@@ -207,8 +207,8 @@ Proceed with Elasticsearch installation.
    $ sudo apt-get install logstash
    ```
    Logstash is installed but it is not configured yet.
-   
-###Generate SSL Certificates
+
+### Generate SSL Certificates
 
 Since we are going to use Filebeat to ship logs from our Client Servers to our ELK Server, we need to create an SSL certificate and key pair. The certificate is used by Filebeat to verify the identity of ELK Server. Create the directories that will store the certificate and private key with the following commands:
 ```shell
@@ -217,7 +217,7 @@ $ sudo mkdir /etc/pki/tls/private
 ```
 Now you have two options for generating your SSL certificates. If you have a DNS setup that will allow your client servers to resolve the IP address of the ELK Server, use **Option 2**. Otherwise, **Option 1** will allow you to use IP addresses.
 
-####Option 1: IP Address
+#### Option 1: IP Address
 
 If you don't have a DNS setup—that would allow your servers, that you will gather logs from, to resolve the IP address of your ELK Server—you will have to add your ELK Server's private IP address to the `subjectAltName` (SAN) field of the SSL certificate that we are about to generate. To do so, open the OpenSSL configuration file:
 ```shell
@@ -237,7 +237,7 @@ Now generate the SSL certificate and private key in the appropriate locations (/
 
 The *logstash-forwarder.crt* file will be copied to all of the servers that will send logs to Logstash but we will do that a little later. Let's complete our Logstash configuration. If you went with this option, skip option 2 and move on to **Configure Logstash**.
 
-####Option 2: FQDN (DNS)
+#### Option 2: FQDN (DNS)
 
 If you have a DNS setup with your private networking, you should create an A record that contains the ELK Server's private IP address—this domain name will be used in the next command, to generate the SSL certificate. Alternatively, you can use a record that points to the server's public IP address. Just be sure that your servers (the ones that you will be gathering logs from) will be able to resolve the domain name to your ELK Server.
 
@@ -248,7 +248,7 @@ Now generate the SSL certificate and private key, in the appropriate locations (
 ```
 The *logstash-forwarder.crt* file will be copied to all of the servers that will send logs to Logstash but we will do that a little later. Let's complete our Logstash configuration.
 
-###Configure Logstash
+### Configure Logstash
 
 Logstash configuration files are in the JSON-format, and reside in `/etc/logstash/conf.d`. The configuration consists of three sections: inputs, filters, and outputs.
 
@@ -330,7 +330,7 @@ Restart Logstash, and enable it, to put our configuration changes into effect:
 ```
 Logstash will be listening for.
 
-###Install Filebeat
+### Install Filebeat
 
 The Filebeat package is available from the same repository as Elasticsearch.
 Update your apt package database:
@@ -343,11 +343,11 @@ $ sudo apt install filebeat
 ```
 Filebeat is installed but it is not configured yet.
 
-###Set Up Filebeat (Add Client Servers)
+### Set Up Filebeat (Add Client Servers)
 
 Do these steps for each Ubuntu or Debian server that you want to send logs to Logstash on your ELK Server.
 
-####Copy SSL Certificate
+#### Copy SSL Certificate
 
 On your **ELK Server**, copy the SSL certificate you created to your **Client Server** (substitute the client server's address, and your own login):
 ```shell
@@ -364,7 +364,7 @@ client$ sudo cp /tmp/logstash-forwarder.crt /etc/pki/tls/certs/
 
 Now we will install the Filebeat package.
 
-###Configure Filebeat
+### Configure Filebeat
 To configure Filebeat, you edit the configuration file.
 ```shell
 $ sudo nano /etc/filebeat/filebeat.yml
@@ -467,7 +467,7 @@ If you’ve already used Filebeat to index data into Elasticsearch, the index ma
 $ curl -XDELETE 'http://localhost:9200/filebeat-*'
 ```
 
-###Connect to Kibana
+### Connect to Kibana
 
 When you are finished setting up Filebeat on all of the servers that you want to gather logs for, let's look at Kibana, the web interface that we installed earlier.
 
@@ -490,7 +490,7 @@ Try the following things:
 
 Kibana has many other features, such as graphing and filtering, so feel free to poke around!
 
-###Conclusion
+### Conclusion
 
 Now that your syslogs are centralized via Elasticsearch and Logstash, and you are able to visualize them with Kibana, you should be off to a good start with centralizing all of your important logs. Remember that you can send pretty much any type of log or indexed data to Logstash, but the data becomes even more useful if it is parsed and structured with grok.
 
